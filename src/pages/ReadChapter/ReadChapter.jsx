@@ -29,6 +29,7 @@ const ReadChapter = () => {
   const sv = useSelector((state) => state.server.sv);
   const readmode = useSelector((state) => state.ReadMode.readmode);
   const navigate = useNavigate();
+  const user_id = sessionStorage?.getItem("user_id");
 
   const fetchChapter = async () => {
     // try {
@@ -70,6 +71,8 @@ const ReadChapter = () => {
     }
   };
   console.log("read");
+  console.log("slugggggggg", slug);
+  console.log("iddddddddddd", id);
 
   const handleDownload = () => {
     console.log(chapterDetail.image_chapter.length);
@@ -226,10 +229,27 @@ const ReadChapter = () => {
       console.log(error);
     }
   };
-
+  // tính năng lưu lịch sử
+  const saveHistory = async (userId, path_segment, chapter_segment) => {
+    const requestBody = {
+      path_segment_manga: path_segment,
+      path_segment_chapter: chapter_segment,
+      type: "manga",
+    };
+    try {
+      const response = await axios.post(
+        `https://apimanga.mangasocial.online/log_user/${userId}`,
+        requestBody
+      );
+      console.log("History saved:", response.data);
+    } catch (error) {
+      console.log("error save", error);
+    }
+  };
   useEffect(() => {
     fetchChapter();
     fetchListChapter();
+    saveHistory(user_id, slug, id);
     // eslint-disable-next-line
   }, [slug, id]);
 

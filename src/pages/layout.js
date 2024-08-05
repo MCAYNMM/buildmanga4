@@ -50,7 +50,6 @@ export default function Layout() {
   const [isServerHovered, setIsServerHovered] = useState(false);
   const [link, setLink] = useState("");
   const [slugState, setSlugState] = useState();
-  const submenuRef = useRef(null);
 
   //handle search
   const [input, setInput] = useState("");
@@ -60,13 +59,19 @@ export default function Layout() {
   const [idMangaList, setIdMangaList] = useState("0");
   const [open, setOpen] = useState(false);
   const [checkSearch, setCheckSearch] = useState(false);
-  const [url, setURL] = useState("");
-  const [isMenuVisible, setIsMenuVisible] = useState(true);
-  const [showMenu, setShowMenu] = useState(true);
-  const [reload, setReload] = useState(true);
+  const [isOpenMenuSearch, setIsOpenMenuSearch] = useState(false);
+  const [isOpenMenuServerForComputer, setIsOpenMenuServerForComputer] =
+    useState(false);
+  const [isOpenMenuServerForPhone, setIsOpenMenuServerForPhone] =
+    useState(false);
   const { slug } = useParams();
 
   const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 1150);
+
+  const menuSearch = useRef(null);
+  const submenuRef = useRef(null);
+  const menuServerForComputer = useRef(null);
+  const menuServerForPhone = useRef(null);
 
   const sv = useSelector((state) => state.server.sv);
   const loading = useSelector((state) => state.server.loading);
@@ -297,6 +302,30 @@ export default function Layout() {
     }));
   };
 
+  const handleClickOutSideMenuSearch = (event) => {
+    if (menuSearch.current && !menuSearch.current.contains(event.target)) {
+      setIsOpenMenuSearch(false);
+    }
+  };
+
+  const handleClickOutSideMenuServerForComputer = (event) => {
+    if (
+      menuServerForComputer.current &&
+      !menuServerForComputer.current.contains(event.target)
+    ) {
+      setIsOpenMenuServerForComputer(false);
+    }
+  };
+
+  const handleClickOutSideMenuServerForPhone = (event) => {
+    if (
+      menuServerForPhone.current &&
+      !menuServerForPhone.current.contains(event.target)
+    ) {
+      setIsOpenMenuServerForPhone(false);
+    }
+  };
+
   const handleClickOutside = (event) => {
     if (submenuRef.current && !submenuRef.current.contains(event.target)) {
       setOpen(false);
@@ -304,10 +333,27 @@ export default function Layout() {
   };
 
   useEffect(() => {
-    document.addEventListener("click", handleClickOutside);
-
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutSideMenuSearch);
+    document.addEventListener(
+      "mousedown",
+      handleClickOutSideMenuServerForComputer
+    );
+    document.addEventListener(
+      "mousedown",
+      handleClickOutSideMenuServerForPhone
+    );
     return () => {
-      document.removeEventListener("click", handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutSideMenuSearch);
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutSideMenuServerForComputer
+      );
+      document.addEventListener(
+        "mousedown",
+        handleClickOutSideMenuServerForPhone
+      );
     };
   }, []);
   useEffect(() => {
@@ -414,10 +460,8 @@ export default function Layout() {
   const handleNavigate = (index) => {
     if (index === 4 || index === 11) {
       navigate(`/${index}/novel`);
-      window.location.reload(true);
     } else {
       navigate(`/${index}`);
-      window.location.reload(true);
     }
   };
 
@@ -562,11 +606,16 @@ export default function Layout() {
               <p className="novel">Novel</p>
             </div>
 
-            <div className="dropdown relative cursor-pointer">
-              <button ref={submenuRef} onClick={() => handleOpen()}>
-                Server
-              </button>
-              {open ? (
+            <div
+              ref={menuServerForComputer}
+              onClick={() =>
+                setIsOpenMenuServerForComputer(!isOpenMenuServerForComputer)
+              }
+              className="dropdown relative cursor-pointer"
+            >
+              <button>Server</button>
+
+              {isOpenMenuServerForComputer ? (
                 <ul
                   className="menu grid grid-cols-2"
                   onClick={() => handleOpen()}
@@ -592,24 +641,18 @@ export default function Layout() {
                 </ul>
               ) : null}
 
-              {open ? (
-                ""
-              ) : (
-                <>
-                  {serverName.map((item) =>
-                    item.sv === sv ? (
-                      <div
-                        key={item.sv}
-                        className="text-red-700 text-base tracking-wide font-normal absolute top-full w-full flex justify-start items-center gap-[6px]"
-                      >
-                        <span>{item.name}</span>
-                        <div>{item.icon}</div>
-                      </div>
-                    ) : (
-                      ""
-                    )
-                  )}
-                </>
+              {serverName.map((item) =>
+                item.sv === sv ? (
+                  <div
+                    key={item.sv}
+                    className="text-red-700 text-base tracking-wide font-normal absolute top-full w-full flex justify-start items-center gap-[6px]"
+                  >
+                    <span>{item.name}</span>
+                    <div>{item.icon}</div>
+                  </div>
+                ) : (
+                  ""
+                )
               )}
             </div>
 
@@ -638,7 +681,10 @@ export default function Layout() {
           </div>
         )}
 
-        <div className={`flex relative items-center space-x-2`}>
+        <div
+          className={`flex relative items-center space-x-2`}
+          ref={menuSearch}
+        >
           <CiSearch
             color="red"
             size={32}
@@ -649,6 +695,7 @@ export default function Layout() {
             className="rounded-full px-4 py-2 text-gray-800"
             placeholder="Search..."
             name="content"
+            onClick={() => setIsOpenMenuSearch(!isOpenMenuSearch)}
             onChange={handleOnChange}
             onKeyDown={handleSearch}
           />
@@ -668,50 +715,51 @@ export default function Layout() {
             // </div>
             <SubMenu />
           )}
-          {/*  */}
-          {checkSearch && input.content && input !== "" ? (
-            <div
-              className={
-                styles.search +
-                " h-80 w-[17rem] bg-[#DADADA] absolute top-[50px] max-[480px]:!hidden rounded-lg border-double flex justify-center flex-col items-center overflow-y-auto "
-              }
-            >
-              <hr className="mt-[150px]" />
-              {searchData ? (
-                searchData.slice(0, 3).map((item, index) => (
-                  <div
-                    key={index}
-                    className="w-[90%] h-full border-double border-red-900 rounded-lg flex border-4 cursor-pointer  "
-                  >
-                    <img
-                      className="w-1/3 h-[69%] py-2 rounded-lg"
-                      src={item.poster}
-                      alt=""
-                    />
-                    <Link
-                      to={"/" + sv + `/chapter/` + arr_path[index]}
-                      className="flex"
-                      onClick={() => {
-                        navigate("/" + sv + "/chapter/" + arr_path[index]);
-                        window.location.reload();
-                      }}
-                    >
-                      <div className="text-lg flex flex-col ml-6 justify-center">
-                        <div>{item.title}</div>
-                        <div>Rate:{item.rate}</div>
-                        <div>Views: {item.views}</div>
-                      </div>
-                    </Link>
-                  </div>
-                ))
-              ) : (
-                <p>Not found @@</p>
-              )}
+          {/* search */}
+          {checkSearch && input.content && isOpenMenuSearch && input !== "" ? (
+            <>
+              <div
+                className={
+                  styles.search +
+                  " h-[500px] w-[380px] bg-[#DADADA] absolute top-[50px] max-[480px]:!hidden right-2 rounded-lg border-double justify-center items-center "
+                }
+              >
+                <div className="h-[470px] overflow-y-scroll overflow-x-hidden w-full">
+                  {searchData ? (
+                    searchData.map((item, index) => (
+                      <Link
+                        to={"/" + sv + `/chapter/` + arr_path[index]}
+                        className="flex px-1 w-full"
+                        onClick={() => {
+                          navigate("/" + sv + "/chapter/" + arr_path[index]);
+                        }}
+                      >
+                        <img
+                          className="w-[50px] h-[100px] py-2 rounded-lg"
+                          src={item.poster}
+                          alt=""
+                        />
 
-              <div className="text-white border-5 border-white bg-blue-400 rounded-lg h-auto w-24 flex text-center content-center justify-center my-2">
-                <button onClick={() => handleCloseSearch()}>Close</button>
+                        <div className="text-lg flex flex-col ml-6 w-full justify-center gap-3">
+                          <div className="whitespace-nowrap truncate w-[260px]">
+                            {item.title}
+                          </div>
+                          <div className="whitespace-nowrap text-normal text-gray-600 truncate w-[260px]">
+                            categories:{item.categories}
+                          </div>
+                        </div>
+                      </Link>
+                    ))
+                  ) : (
+                    <p>Not found @@</p>
+                  )}
+                </div>
+
+                <div className="text-white border-5 w-full border-white bg-blue-400 rounded-lg h-auto text-center flex content-center justify-center my-2">
+                  <button onClick={() => handleCloseSearch()}>Close</button>
+                </div>
               </div>
-            </div>
+            </>
           ) : null}
         </div>
       </div>
@@ -742,7 +790,10 @@ export default function Layout() {
               />
             </div>
           )}
-          <div className="!w-full flex justify-center items-center ">
+          <div
+            className="!w-full flex justify-center relative items-center "
+            ref={menuServerForPhone}
+          >
             {/* <CiSearch
               color="red"
               size={32}
@@ -755,51 +806,61 @@ export default function Layout() {
               name="content"
               onChange={handleOnChange}
               onKeyDown={handleSearch}
+              onClick={() => {
+                console.log(isOpenMenuServerForPhone);
+
+                setIsOpenMenuServerForPhone(!isOpenMenuServerForPhone);
+              }}
             />
+            {checkSearch &&
+            isOpenMenuServerForPhone &&
+            input.content &&
+            input.content !== "" ? (
+              <div className="w-[92%] bg-[#DADADA] absolute bottom-[-360px]  rounded-lg border-double flex justify-center flex-col items-center ">
+                <div className="w-full overflow-x-hidden overflow-y-auto h-[300px]">
+                  {searchData ? (
+                    searchData.map((item, index) => (
+                      <>
+                        <Link
+                          to={"/" + sv + `/chapter/` + arr_path[index]}
+                          className="flex px-1 w-full"
+                          onClick={() => {
+                            navigate("/" + sv + "/chapter/" + arr_path[index]);
+                          }}
+                        >
+                          <img
+                            className="w-[50px] h-[100px] py-2 rounded-lg"
+                            src={item.poster}
+                            alt=""
+                          />
+
+                          <div className="text-lg flex flex-col ml-6 w-full justify-center gap-3">
+                            <div className="whitespace-nowrap truncate w-[260px]">
+                              {item.title}
+                            </div>
+                            <div className="whitespace-nowrap text-normal text-gray-600 truncate w-[260px]">
+                              categories:{item.categories}
+                            </div>
+                          </div>
+                        </Link>
+                      </>
+                    ))
+                  ) : (
+                    <p>Not found @@</p>
+                  )}
+                </div>
+                <div className="text-white border-5 w-full border-white bg-blue-400 rounded-lg h-auto flex text-center content-center justify-center my-2">
+                  <button
+                    className="w-full"
+                    onClick={() => handleCloseSearch()}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            ) : null}
           </div>
           {/*  */}
-          {checkSearch && input.content && input.content !== "" ? (
-            <div className="h-80 w-[17rem] bg-[#DADADA] absolute mt-[150px] ml-[20px] rounded-lg border-double flex justify-center flex-col items-center overflow-y-auto ">
-              <hr className="mt-[150px]" />
-              {searchData ? (
-                searchData.slice(0, 3).map((item, index) => {
-                  console.log(arr_path[index], "wwwwwwwwwwwwwwwwwwwwwwwww");
-                  return (
-                    <div
-                      key={index}
-                      className="w-[90%] h-full border-double border-red-900 rounded-lg flex border-4 cursor-pointer  "
-                    >
-                      <img
-                        className="w-1/3 h-[69%] py-2 rounded-lg"
-                        src={item.poster}
-                        alt=""
-                      />
-                      <Link
-                        to={"/" + sv + `/chapter/` + arr_path[index]}
-                        onClick={() => {
-                          navigate("/" + sv + "/chapter/" + arr_path[index]);
-                          window.location.reload();
-                        }}
-                        className="flex"
-                      >
-                        <div className="text-lg flex flex-col ml-6 justify-center">
-                          <div>{item.title}</div>
-                          <div>Rate:{item.rate}</div>
-                          <div>Views: {item.views}</div>
-                        </div>
-                      </Link>
-                    </div>
-                  );
-                })
-              ) : (
-                <p>Not found @@</p>
-              )}
-
-              <div className="text-white border-5 border-white bg-blue-400 rounded-lg h-auto w-24 flex text-center content-center justify-center my-2">
-                <button onClick={() => handleCloseSearch()}>Close</button>
-              </div>
-            </div>
-          ) : null}
         </div>
       </div>
       <div className="header-mobile  w-full z-[999] py-2 pe-2 bg-[#F45F17] fixed bottom-0 right-0 hidden max-[480px]:block">
@@ -855,37 +916,12 @@ export default function Layout() {
                   </>
                 )}
               </div>
-              {/* <div className="dropdown max-[480px]:static text-sm max-[480px]:hover:!text-white">
-                <div className="!text-white hover:!text-white ">Server</div>
-                {open ? (
-                  <ul
-                    className="menu max-[480px]:absolute w-auto grid grid-cols-2 max-[480px]:bottom-[90%] max-[480px]:!left-0 max-[480px]:right-0 max-[480px]:w-[100vh] z-[999]"
-                    onClick={() => handleOpen()}
-                  >
-                    {serverName &&
-                      serverName.length > 0 &&
-                      serverName.map((item) => (
-                        <li
-                          key={item.sv}
-                          className="menu-item flex justify-start  items-center p-2"
-                          onClick={() => navigate("/" + item.sv)}
-                        >
-                          <button
-                            onClick={() => dispatch(changeServer(item.sv))}
-                          >
-                            {item.name}
-                          </button>
-                          <div className="">{item.icon}</div>
-                        </li>
-                      ))}
-                  </ul>
-                ) : null}
-              </div> */}
+
               <div className="dropdown relative max-[480px]:static text-sm max-[480px]:hover:!text-white">
                 <div className="!text-white hover:!text-white ">Server</div>
                 {open && (
                   <ul
-                    className="menu slider-container absolute top-[-34px] left-0 bg-black transform -translate-y-full overflow-x-auto -translate-x-[50%] min-w-[330px] grid grid-cols-2 shadow-lg max-[480px]:absolute max-[480px]:w-full z-[999]"
+                    className="menu slider-container min-w-[350px] absolute top-[-34px] left-0 bg-black transform -translate-y-full overflow-x-auto -translate-x-[50%] grid grid-cols-2 shadow-lg max-[480px]:absolute max-[480px]:w-full z-[999]"
                     onClick={() => handleOpen()}
                   >
                     {serverName &&
@@ -894,15 +930,17 @@ export default function Layout() {
                         <li
                           key={item.sv}
                           className="menu-item slider-item flex justiyf-start items-center p-2 hover:bg-gray-200"
-                          onClick={() => navigate("/" + item.sv)}
+                          onClick={() => {
+                            navigate("/" + item.sv);
+                            dispatch(changeServer(item.sv));
+                          }}
                         >
-                          <button
-                            className="text-left w-full flex justify-start items-center"
-                            onClick={() => dispatch(changeServer(item.sv))}
-                          >
+                          {/* <button className="text-left w-full flex justify-start items-center">
                             {item.name}
                             <div className="ml-2">{item.icon}</div>
-                          </button>
+                          </button> */}
+                          <div>{item.name}</div>
+                          <div className="ml-2">{item.icon}</div>
                         </li>
                       ))}
                   </ul>

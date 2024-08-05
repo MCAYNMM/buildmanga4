@@ -70,14 +70,19 @@ const ChapterCard = ({
             : getChapterFromUrl2(chapterNumberReadMode)
         }`}
       >
-        <div className="flex border-gray-300 border-b shallow-sm items-center w-full gap-4 md:gap-[80px] my-3  cursor-pointer py-4 md:py-8 px-2 justify-between md:px-12 transition-all duration-200">
+        <div className="flex border-gray-300 border-b shallow-sm items-center w-full gap-4 my-3  cursor-pointer py-4 md:py-8 px-2 justify-between transition-all duration-200">
           {/* chapter info */}
-          <div className="items-center text-xl truncate gap-4 md:gap-12 md:py-2 text-white font-semibold whitespace-nowrap w-full md:w-auto">
+          <div className="items-center text-xl truncate gap-4 md:gap-12 md:py-2 text-white font-semibold whitespace-nowrap w-full">
             {` ${chapterName} `}
           </div>
           <div className="items-start whitespace-nowrap  md:items-center font-semibold text-xl text-[#ff9f66] text-right w-full md:gap-0">
-            <button className="hover:underline" onClick={(e) => downloadPDF(e)}>
-              Down Load
+            <button
+              className="hover:underline"
+              onClick={(e) => {
+                sv == 4 && downloadPDF(e);
+              }}
+            >
+              {sv == 4 ? "Down Load PDF" : "Read"}
             </button>
           </div>
         </div>

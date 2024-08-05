@@ -69,7 +69,10 @@ const HotCardManga = ({
           </h2>
         </div>
       </div> */}
-      <img src={poster} className="h-[240px] max-[480px]:h-[150px] w-[100%]" />
+      <img
+        src={poster}
+        className="h-[240px] w-[166px] max-[480px]:h-[150px] max-[480px]:w-[100px]"
+      />
     </NavLink>
   );
 };

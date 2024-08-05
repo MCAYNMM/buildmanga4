@@ -32,6 +32,9 @@ const NovelPage = () => {
   const user_id = sessionStorage.getItem("user_id");
   const [currentChap, setCurrentChap] = useState("");
   const navigate = useNavigate();
+  console.log("chapterDataaaaaaaaaa", chapterData);
+  console.log("chapterDetaillllllll", chapterDetail);
+  console.log("subTitleeeeeeeee", subTitle);
 
   const readmode = useSelector((state) => state.ReadMode.readmode);
 
@@ -94,6 +97,7 @@ const NovelPage = () => {
       }
     }
   };
+
   const prevChap = () => {
     let indexOfCurrentChap = listChap.indexOf(currentChap);
     console.log(indexOfCurrentChap);
@@ -181,6 +185,24 @@ const NovelPage = () => {
       console.log("slug:", slug);
     }
   };
+
+  const saveHistory = async (userId, path_segment, chapter_segment) => {
+    const requestBody = {
+      path_segment_manga: path_segment,
+      path_segment_chapter: chapter_segment,
+      type: "novel",
+    };
+    try {
+      const response = await axios.post(
+        `https://apimanga.mangasocial.online/log_user/${userId}`,
+        requestBody
+      );
+      console.log("History saved:", response.data);
+    } catch (error) {
+      console.log("error save", error);
+    }
+  };
+
   useEffect(() => {
     if (readmode) {
       fetchChapterDetail();
@@ -200,6 +222,10 @@ const NovelPage = () => {
       );
     }
   }, [chapter]);
+
+  useEffect(() => {
+    saveHistory(user_id, slug, chapter);
+  }, [slug, chapter]);
 
   const handleSeeMore = () => {
     setVisibleChapterCount((prevCount) => prevCount + 10);

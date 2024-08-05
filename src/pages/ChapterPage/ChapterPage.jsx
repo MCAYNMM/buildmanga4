@@ -20,6 +20,7 @@ const ChapterPage = () => {
   const [showFullDescription, setShowFullDescription] = useState(false);
   const [comment, setComment] = useState("");
   const [commentDetail, setCommentDetail] = useState([]);
+  const [reload, setReload] = useState(false);
 
   // console.log("check comment", comment);
   const [loading, setLoading] = useState(true);
@@ -112,7 +113,7 @@ const ChapterPage = () => {
   useEffect(() => {
     fetchChapterDetail();
     fetchListComment();
-  }, []);
+  }, [slug]);
 
   const handleSeeMore = () => {
     setVisibleChapterCount((prevCount) => prevCount + 10);

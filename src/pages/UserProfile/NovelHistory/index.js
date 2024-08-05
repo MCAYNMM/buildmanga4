@@ -41,7 +41,7 @@ const NovelHistory = (data) => {
   return (
     <>
       {" "}
-      <div className="bg-gray-800 text-black p-6 rounded-lg shadow-md">
+      <div className="bg-gray-800 text-black p-6 mb-5 rounded-lg shadow-md">
         {/* ------------------- FILTER DATA NOVEL ----------------------------*/}
         <div className="mb-4">
           <select
@@ -92,9 +92,8 @@ const NovelHistory = (data) => {
           </div>
         )}
         {/* ------------------- FILTER DATA NOVEL ----------------------------*/}
-        <div className="max-[480px]:!text-2xl  text-5xl max-[738px]:text-[34px] text-white relative font-semibold">
+        <div className="max-[480px]:!text-2xl mb-5 text-5xl max-[738px]:text-[34px] text-white relative font-semibold">
           Recent Read Novel
-          <div className=" w-[100px] h-[7px] bg-[#F45F17] -top-[40%] rounded-[35px] left-0 absolute "></div>
         </div>
 
         <div className="h-[670px] mb-5 scroll-container overflow-y-auto overflow-x-hidden">
@@ -111,30 +110,11 @@ const NovelHistory = (data) => {
                 chapterUrl.split("/")[chapterUrl.split("/").length - 2];
 
               return (
-                <Tippy
-                  content="This is a tooltip"
-                  placement="bottom"
-                  offset={[-100, -50]}
+                <NavLink
+                  to={`/${sv}/chapter/${slug}`}
+                  className="d-flex max-[480px]:flex-col justify-between gap-2 pt-4 p-2 text-white border-b border-gray-400"
                 >
-                  <NavLink
-                    to={`/${sv}/chapter/${slug}`}
-                    className="d-flex justify-between gap-2 mt-4 p-2 text-white border-b border-gray-400"
-                  >
-                    <div className="w-1/3 text-left text-lg truncate">
-                      {novel.title_manga}
-                    </div>
-                    <NavLink
-                      to={`/${sv}/novel/${slug}/${chapter}`}
-                      className="w-1/3 text-center truncate text-lg "
-                    >
-                      <span className="text-yellow-400">{chapter}</span>__{" "}
-                      {titleChapter}
-                    </NavLink>
-                    <div className="w-1/3 text-right truncate text-lg text-gray-400">
-                      {novel.readAt}
-                    </div>
-
-                    {/* <div className="w-1/3 text-left text-lg truncate">
+                  <div className="w-1/3 text-left text-lg truncate">
                     {novel.title_manga}
                   </div>
                   <NavLink
@@ -144,11 +124,10 @@ const NovelHistory = (data) => {
                     <span className="text-yellow-400">{chapter}</span>__{" "}
                     {titleChapter}
                   </NavLink>
-                  <div className="w-1/3 text-right truncate text-lg text-gray-400">
+                  <div className="w-1/3 flex-shrink-0 text-right truncate text-lg text-gray-400">
                     {novel.readAt}
-                  </div> */}
-                  </NavLink>
-                </Tippy>
+                  </div>
+                </NavLink>
               );
             })}
         </div>

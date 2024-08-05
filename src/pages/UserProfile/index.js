@@ -789,7 +789,7 @@ function UserProfile() {
           <div className="text-6xl text-white mb-10">
             <Link to="">Novel Viewing History</Link>
           </div>
-          <div className="">
+          <div className="mb-5">
             {/* <ComicRecent /> */}
             <NovelHistory data={novelDataHistory} />
           </div>

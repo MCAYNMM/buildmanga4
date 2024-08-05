@@ -24,219 +24,163 @@ import { setIsLoading } from "../../Redux/Feature/serverSlice";
 const Dropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
-    const [isHovered, setIsHovered] = useState(false);
-    const [isServerHovered, setIsServerHovered] = useState(false);
-    const [link, setLink] = useState("");
-    const submenuRef = useRef(null);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isServerHovered, setIsServerHovered] = useState(false);
+  const [link, setLink] = useState("");
+  const submenuRef = useRef(null);
 
-    //handle search
-    const [input, setInput] = useState("");
-    const [search, setSearch] = useState("");
-    const [searchData, setSearchData] = useState("");
-    const [idMangaList, setIdMangaList] = useState("0");
-    const [open, setOpen] = useState(false);
-    const [checkSearch, setCheckSearch] = useState(false);
-    const [url, setURL] = useState("");
-    const [isMenuVisible, setIsMenuVisible] = useState(true);
-    const [showMenu, setShowMenu] = useState(true);
-    const [isLargeScreen, setIsLargeScreen] = useState(
-      window.innerWidth > 1800
-    );
+  //handle search
+  const [input, setInput] = useState("");
+  const [search, setSearch] = useState("");
+  const [searchData, setSearchData] = useState("");
+  const [idMangaList, setIdMangaList] = useState("0");
+  const [open, setOpen] = useState(false);
+  const [checkSearch, setCheckSearch] = useState(false);
+  const [url, setURL] = useState("");
+  const [isMenuVisible, setIsMenuVisible] = useState(true);
+  const [showMenu, setShowMenu] = useState(true);
+  const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth > 1800);
 
-      const serverName = [
-        {
-          sv: 0,
-          name: "mangainn.net",
-          icon: (
-            <US
-              title="Vietnamese"
-              className="max-[480px]:h-5 max-[480px]:w-5 "
-            />
-          ),
-        },
-        {
-          sv: 1,
-          name: "ww5.manganelo.tv",
-          icon: (
-            <JP
-              title="Vietnamese"
-              className="max-[480px]:h-5 max-[480px]:w-5"
-            />
-          ),
-        },
-        {
-          sv: 2,
-          name: "mangareader.cc",
-          icon: (
-            <JP
-              title="Vietnamese"
-              className="max-[480px]:h-5 max-[480px]:w-5"
-            />
-          ),
-        },
-        {
-          sv: 3,
-          name: "ninemanga.com",
-          icon: (
-            <JP
-              title="Vietnamese"
-              className="max-[480px]:h-5 max-[480px]:w-5"
-            />
-          ),
-        },
-        {
-          sv: 4,
-          name: "bestlightnovel.com",
-          icon: (
-            <XK
-              title="Vietnamese"
-              className="max-[480px]:h-5 max-[480px]:w-5"
-            />
-          ),
-        },
-        {
-          sv: 5,
-          name: "mangajar.com/manga",
-          icon: (
-            <EU
-              title="Vietnamese"
-              className="max-[480px]:h-5 max-[480px]:w-5"
-            />
-          ),
-        },
-        {
-          sv: 6,
-          name: "mangakomi.io",
-          icon: (
-            <US
-              title="Vietnamese"
-              className="max-[480px]:h-5 max-[480px]:w-5"
-            />
-          ),
-        },
-        {
-          sv: 7,
-          name: "readm.org",
-          icon: (
-            <EU
-              title="Vietnamese"
-              className="max-[480px]:h-5 max-[480px]:w-5"
-            />
-          ),
-        },
-        // {
-        //   sv: 8,
-        //   name: "mangajar.com",
-        //   icon: <XK title="Vietnamese" className="max-[480px]:h-5 max-[480px]:w-5" />,
-        // },
-        {
-          sv: 9,
-          name: "swatmanga.com",
-          icon: (
-            <EU
-              title="Vietnamese"
-              className="max-[480px]:h-5 max-[480px]:w-5"
-            />
-          ),
-        },
-        {
-          sv: 10,
-          name: "mangajar.com",
-          icon: (
-            <JP
-              title="Vietnamese"
-              className="max-[480px]:h-5 max-[480px]:w-5"
-            />
-          ),
-        },
-        {
-          sv: 11,
-          name: "novelhall.com",
-          icon: (
-            <JP
-              title="Vietnamese"
-              className="max-[480px]:h-5 max-[480px]:w-5"
-            />
-          ),
-        },
-        {
-          sv: 12,
-          name: "mto.com",
-          icon: (
-            <JP
-              title="Vietnamese"
-              className="max-[480px]:h-5 max-[480px]:w-5"
-            />
-          ),
-        },
-        {
-          sv: 13,
-          name: "de.ninemanga.com",
-          icon: (
-            <JP
-              title="Vietnamese"
-              className="max-[480px]:h-5 max-[480px]:w-5"
-            />
-          ),
-        },
-        {
-          sv: 14,
-          name: "br.ninemanga.com",
-          icon: (
-            <JP
-              title="Vietnamese"
-              className="max-[480px]:h-5 max-[480px]:w-5"
-            />
-          ),
-        },
-        {
-          sv: 15,
-          name: "ru.ninemanga.com",
-          icon: (
-            <RU
-              title="Vietnamese"
-              className="max-[480px]:h-5 max-[480px]:w-5"
-            />
-          ),
-        },
-        {
-          sv: 16,
-          name: "es.ninemanga.com",
-          icon: (
-            <JP
-              title="Vietnamese"
-              className="max-[480px]:h-5 max-[480px]:w-5"
-            />
-          ),
-        },
-        {
-          sv: 17,
-          name: "fr.ninemanga.com",
-          icon: (
-            <FR
-              title="Vietnamese"
-              className="max-[480px]:h-5 max-[480px]:w-5"
-            />
-          ),
-        },
-        {
-          sv: 18,
-          name: "it.ninemanga.com",
-          icon: (
-            <US
-              title="Vietnamese"
-              className="max-[480px]:h-5 max-[480px]:w-5"
-            />
-          ),
-        },
-        // {
-        //   sv: 19,
-        //   name: "azoranov.com/series/",
-        //   icon: <US title="Vietnamese" className="max-[480px]:h-5 max-[480px]:w-5" />,
-        // },
-      ];
-    const sv = useSelector((state) => state.server.sv);
-    const navigate = useNavigate();
+  const serverName = [
+    {
+      sv: 0,
+      name: "mangainn.net",
+      icon: (
+        <US title="Vietnamese" className="max-[480px]:h-5 max-[480px]:w-5 " />
+      ),
+    },
+    {
+      sv: 1,
+      name: "ww5.manganelo.tv",
+      icon: (
+        <JP title="Vietnamese" className="max-[480px]:h-5 max-[480px]:w-5" />
+      ),
+    },
+    {
+      sv: 2,
+      name: "mangareader.cc",
+      icon: (
+        <JP title="Vietnamese" className="max-[480px]:h-5 max-[480px]:w-5" />
+      ),
+    },
+    {
+      sv: 3,
+      name: "ninemanga.com",
+      icon: (
+        <JP title="Vietnamese" className="max-[480px]:h-5 max-[480px]:w-5" />
+      ),
+    },
+    {
+      sv: 4,
+      name: "bestlightnovel.com",
+      icon: (
+        <XK title="Vietnamese" className="max-[480px]:h-5 max-[480px]:w-5" />
+      ),
+    },
+    {
+      sv: 5,
+      name: "mangajar.com/manga",
+      icon: (
+        <EU title="Vietnamese" className="max-[480px]:h-5 max-[480px]:w-5" />
+      ),
+    },
+    {
+      sv: 6,
+      name: "mangakomi.io",
+      icon: (
+        <US title="Vietnamese" className="max-[480px]:h-5 max-[480px]:w-5" />
+      ),
+    },
+    {
+      sv: 7,
+      name: "readm.org",
+      icon: (
+        <EU title="Vietnamese" className="max-[480px]:h-5 max-[480px]:w-5" />
+      ),
+    },
+    // {
+    //   sv: 8,
+    //   name: "mangajar.com",
+    //   icon: <XK title="Vietnamese" className="max-[480px]:h-5 max-[480px]:w-5" />,
+    // },
+    {
+      sv: 9,
+      name: "swatmanga.com",
+      icon: (
+        <EU title="Vietnamese" className="max-[480px]:h-5 max-[480px]:w-5" />
+      ),
+    },
+    {
+      sv: 10,
+      name: "mangajar.com",
+      icon: (
+        <JP title="Vietnamese" className="max-[480px]:h-5 max-[480px]:w-5" />
+      ),
+    },
+    {
+      sv: 11,
+      name: "novelhall.com",
+      icon: (
+        <JP title="Vietnamese" className="max-[480px]:h-5 max-[480px]:w-5" />
+      ),
+    },
+    {
+      sv: 12,
+      name: "mto.com",
+      icon: (
+        <JP title="Vietnamese" className="max-[480px]:h-5 max-[480px]:w-5" />
+      ),
+    },
+    {
+      sv: 13,
+      name: "de.ninemanga.com",
+      icon: (
+        <JP title="Vietnamese" className="max-[480px]:h-5 max-[480px]:w-5" />
+      ),
+    },
+    {
+      sv: 14,
+      name: "br.ninemanga.com",
+      icon: (
+        <JP title="Vietnamese" className="max-[480px]:h-5 max-[480px]:w-5" />
+      ),
+    },
+    {
+      sv: 15,
+      name: "ru.ninemanga.com",
+      icon: (
+        <RU title="Vietnamese" className="max-[480px]:h-5 max-[480px]:w-5" />
+      ),
+    },
+    {
+      sv: 16,
+      name: "es.ninemanga.com",
+      icon: (
+        <JP title="Vietnamese" className="max-[480px]:h-5 max-[480px]:w-5" />
+      ),
+    },
+    {
+      sv: 17,
+      name: "fr.ninemanga.com",
+      icon: (
+        <FR title="Vietnamese" className="max-[480px]:h-5 max-[480px]:w-5" />
+      ),
+    },
+    {
+      sv: 18,
+      name: "it.ninemanga.com",
+      icon: (
+        <US title="Vietnamese" className="max-[480px]:h-5 max-[480px]:w-5" />
+      ),
+    },
+    // {
+    //   sv: 19,
+    //   name: "azoranov.com/series/",
+    //   icon: <US title="Vietnamese" className="max-[480px]:h-5 max-[480px]:w-5" />,
+    // },
+  ];
+  const sv = useSelector((state) => state.server.sv);
+  const navigate = useNavigate();
 
   const toggleDropdown = () => setIsOpen(!isOpen);
 
@@ -245,15 +189,23 @@ const Dropdown = () => {
       setIsOpen(false);
     }
   };
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const handleCloseSearch = () => {
     setCheckSearch(false);
   };
-    const handleOpen = () => {
-      setOpen(!open);
-    };
+  const handleOpen = () => {
+    setOpen(!open);
+  };
   const handleMouseEnter = () => {
     setIsHovered(true);
+  };
+
+  const handleNavigate = (index) => {
+    if (index === 4 || index === 11) {
+      navigate(`/${index}/novel`);
+    } else {
+      navigate(`/${index}`);
+    }
   };
 
   const handleMouseLeave = () => {
@@ -331,7 +283,7 @@ const Dropdown = () => {
                       <li
                         key={item.sv}
                         className="menu-item flex justify-start items-center pe-2"
-                        onClick={() => navigate("/" + item.sv)}
+                        onClick={() => handleNavigate(item.sv)}
                       >
                         <button onClick={() => dispatch(changeServer(item.sv))}>
                           {item.name}

@@ -1,22 +1,22 @@
 const filterNovel_Manga = (data, filter, customRange) => {
   const now = new Date();
-  let filteredData = data;
-
+  let filteredData = data.data;
+  var d = new Date();
   switch (filter) {
     case "1_week":
-      filteredData = data.filter(
+      filteredData = data.data.filter(
         (manga) =>
           new Date(manga.readAt) >= new Date(now.setDate(now.getDate() - 7))
       );
       break;
     case "1_month":
-      filteredData = data.filter(
+      filteredData = data.data.filter(
         (manga) =>
           new Date(manga.readAt) >= new Date(now.setMonth(now.getMonth() - 1))
       );
       break;
     case "3_months":
-      filteredData = data.filter(
+      filteredData = data.data.filter(
         (manga) =>
           new Date(manga.readAt) >= new Date(now.setMonth(now.getMonth() - 3))
       );
@@ -28,13 +28,13 @@ const filterNovel_Manga = (data, filter, customRange) => {
       );
       break;
     case "6_months":
-      filteredData = data.filter(
+      filteredData = data.data.filter(
         (manga) =>
           new Date(manga.readAt) >= new Date(now.setMonth(now.getMonth() - 6))
       );
       break;
     case "1_year":
-      filteredData = data.filter(
+      filteredData = data.data.filter(
         (manga) =>
           new Date(manga.readAt) >=
           new Date(now.setFullYear(now.getFullYear() - 1))
@@ -44,7 +44,7 @@ const filterNovel_Manga = (data, filter, customRange) => {
       if (customRange.startDate && customRange.endDate) {
         const start = new Date(customRange.startDate);
         const end = new Date(customRange.endDate);
-        filteredData = data.filter((manga) => {
+        filteredData = data.data.filter((manga) => {
           const readAt = new Date(manga.readAt);
           return readAt >= start && readAt <= end;
         });

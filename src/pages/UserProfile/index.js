@@ -181,8 +181,9 @@ function UserProfile() {
       );
       console.log("Data History:", response.data);
 
-      const novelArray = response.data.filter((item) => item.type === "novel");
-      const mangaArray = response.data.filter((item) => item.type === "manga");
+      const responseData = response.data;
+      const novelArray = responseData.filter((item) => item.type === "novel");
+      const mangaArray = responseData.filter((item) => item.type === "manga");
 
       setMangaDataHistory(mangaArray);
       setNovelDataHistory(novelArray);
@@ -191,7 +192,7 @@ function UserProfile() {
       console.log("error save", error);
     }
   };
-  console.log("Data Histor", dataHistory);
+  console.log("Data History", dataHistory);
   const hideModal = (type) => {
     if (type === "introduction") {
       setOpenIntroduction(false);
@@ -258,7 +259,7 @@ function UserProfile() {
   useEffect(() => {
     fetchUserData();
     getDataHistory();
-  }, []);
+  }, [user_id]);
 
   return (
     <div className="bg-[#000000] h-full">
